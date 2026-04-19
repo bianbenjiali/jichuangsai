@@ -60,8 +60,12 @@ module stage_mem (
 								default : reg_wdata_o = 0;
 							endcase
 						end
-						`EXE_LW_OP : reg_wdata_o = mem_data_i;
-						// ... (无符号扩展 LBU/LHU 类似，高位补0，篇幅所限省略具体case，直接补0即可)
+						`EXE_LW_OP : begin
+							case (mem_addr_i[1:0])
+								2'b00   : reg_wdata_o = mem_data_i;
+								default : reg_wdata_o = 0;
+							endcase
+						end
 						`EXE_LBU_OP : begin
 							case (mem_addr_i[1:0])
 								2'b00   : reg_wdata_o = {{24{1'b0}}, mem_data_i[7:0]};
@@ -69,6 +73,13 @@ module stage_mem (
 								2'b10   : reg_wdata_o = {{24{1'b0}}, mem_data_i[23:16]};
 								2'b11   : reg_wdata_o = {{24{1'b0}}, mem_data_i[31:24]};
                                 default : reg_wdata_o = 0;
+							endcase
+						end
+						`EXE_LHU_OP : begin
+							case (mem_addr_i[1:0])
+								2'b00   : reg_wdata_o = {{16{1'b0}}, mem_data_i[15:0]};
+								2'b10   : reg_wdata_o = {{16{1'b0}}, mem_data_i[31:16]};
+								default: 
 							endcase
 						end
 					endcase
@@ -85,16 +96,30 @@ module stage_mem (
 						2'b01   : mem_sel = 4'b0010;
 						2'b10   : mem_sel = 4'b0100;
 						2'b11   : mem_sel = 4'b1000;
+						default : mem_sel = 4'b0000;
+					endcase
+				end
+				`EXE_SH_OP : begin
+					mem_addr_o = mem_addr_i;
+					mem_we     = 1'b1;
+					mem_data_o = {2{rt_data[15:0]}};
+					reg_wdata_o = 0;
+					case (mem_addr_i[1:0])
+						2'b00   : mem_sel = 4'b0011;
+						2'b10   : mem_sel = 4'b1100;
+						default : mem_sel = 4'b0000;
 					endcase
 				end
 				`EXE_SW_OP : begin
 					mem_addr_o = mem_addr_i;
 					mem_we     = 1'b1;
 					mem_data_o = rt_data;
-					mem_sel    = 4'b1111; // 4个字节全写
 					reg_wdata_o = 0;
+					case (mem_addr_i[1:0])
+						2'b00   : mem_sel = 4'b1111 
+						default: 
+					endcase
 				end
-				// (SH指令同理，省略)
 				default : begin
 					// 既不是Load也不是Store，直接把ALU结果传给下一级写回寄存器
 					reg_wdata_o = reg_wdata_i;
