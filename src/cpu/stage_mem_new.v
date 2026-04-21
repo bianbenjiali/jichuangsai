@@ -121,7 +121,6 @@ module stage_mem (
 					endcase
 				end
 				default : begin
-					// 既不是Load也不是Store，直接把ALU结果传给下一级写回寄存器
 					reg_wdata_o = reg_wdata_i;
 				end
 			endcase
