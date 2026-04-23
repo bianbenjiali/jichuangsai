@@ -54,6 +54,15 @@
 // MISC-MEM
 `define FUNCT3_FENCE  3'b000
 `define FUNCT3_FENCEI 3'b001
+// M 扩展的 8 种 funct3
+`define FUNCT3_MUL    3'b000 // 取乘法结果的低 32 位
+`define FUNCT3_MULH   3'b001 // 有符号乘法，取高 32 位
+`define FUNCT3_MULHSU 3'b010 // 有符号*无符号，取高 32 位
+`define FUNCT3_MULHU  3'b011 // 无符号乘法，取高 32 位
+`define FUNCT3_DIV    3'b100 // 有符号除法
+`define FUNCT3_DIVU   3'b101 // 无符号除法
+`define FUNCT3_REM    3'b110 // 有符号求余
+`define FUNCT3_REMU   3'b111 // 无符号求余
 
 //================== Instruction funct7 in RISC-V ================== 
 `define FUNCT7_SLLI 7'b0000000
@@ -72,6 +81,8 @@
 `define FUNCT7_SRA 7'b0100000
 `define FUNCT7_OR  7'b0000000
 `define FUNCT7_AND 7'b0000000
+// M 扩展特有的 funct7
+`define FUNCT7_M   7'b0000001
 
 //================== AluSel ================== 
 `define EXE_RES_LOGIC       3'b001
@@ -116,6 +127,17 @@
 `define EXE_SB_OP  25
 `define EXE_SH_OP  26
 `define EXE_SW_OP  27
+
+`define EXE_MUL_OP 28
+`define EXE_MULH_OP 29
+`define EXE_MULHSU_OP 30
+`define EXE_MULHU_OP 31
+
+`define EXE_DIV_OP 32
+`define EXE_DIVU_OP 33
+`define EXE_REM_OP 34
+`define EXE_REMU_OP 35
+
 
 //==================  Hardware Properties ================== 
 
