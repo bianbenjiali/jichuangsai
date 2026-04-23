@@ -12,6 +12,13 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	ctrl
 
+} {} {}} D:/GitHub/jichuangsai/test/cpu_core_tb.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/test/cpu_core_tb.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module cpu_core_tb
+
+Top level modules:
+	cpu_core_tb
+
 } {} {}} D:/GitHub/jichuangsai/src/cpu/reg_id_ex.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/reg_id_ex.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module reg_id_ex
