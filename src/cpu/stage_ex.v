@@ -26,6 +26,14 @@ module stage_ex (
 	reg[`RegBus] shift_out;
 	reg[`RegBus] arith_out;
 	reg[`RegBus] mem_out;
+	reg[`RegBus] mul_out;
+
+	// 1. 有符号 * 有符号
+	wire signed [63:0] mul_signed_signed = $signed(opv1) * $signed(opv2);
+	// 2. 无符号 * 无符号
+	wire [63:0] mul_unsigned_unsigned = opv1 * opv2;
+	// 3. 有符号 * 无符号 (先把无符号数扩展成有符号数，再乘)
+	wire signed[63:0] mul_signed_unsigned = $signed(opv1) * $signed({1'b0, opv2});
 
 	// EXE_RES_LOGIC
 	always @ (*) begin
@@ -97,6 +105,32 @@ module stage_ex (
 		end // end else
 	end // always @ (*)
 
+	// EXE_RES_MUL
+	always @(*) begin
+		if (rst || alusel != `EXE_RES_MUL) begin
+			mul_out = 0;
+		end else begin
+			case (aluop)
+				`EXE_MUL_OP: begin
+					mul_out = mul_signed_signed[31:0];
+				end
+				`EXE_MULH_OP: begin
+					mul_out = mul_signed_signed[63:32];
+				end
+				`EXE_MULHSU_OP: begin
+					mul_out = mul_signed_unsigned[63:32];
+				end
+				`EXE_MULHU_OP: begin
+					mul_out = mul_unsigned_unsigned[63:32];
+				end
+				default: begin
+					mul_out = 0;
+				end
+			endcase
+		end
+	end
+
+
 	// EXE_RES_LOAD_STORE
 	always @ (*) begin
 		if(rst || alusel != `EXE_RES_LOAD_STORE) begin
@@ -133,10 +167,14 @@ module stage_ex (
 				reg_wdata = 0;
 				mem_addr  = mem_out;
 			end
+			`EXE_RES_MUL : begin
+				reg_wdata = mul_out;
+			end
 			default : begin
 				reg_wdata = 0;
 			end
 		endcase // alusel
 	end // always @ (*)
+
 
 endmodule // stage_ex

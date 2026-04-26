@@ -12,6 +12,13 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	ctrl
 
+} {} {}} D:/GitHub/jichuangsai/test/cpu_core_tb.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/test/cpu_core_tb.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module cpu_core_tb
+
+Top level modules:
+	cpu_core_tb
+
 } {} {}} D:/GitHub/jichuangsai/src/cpu/reg_id_ex.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/reg_id_ex.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module reg_id_ex
@@ -26,12 +33,12 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	cpu_core
 
-} {} {}} D:/GitHub/jichuangsai/src/cpu/reg_if_id.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/reg_if_id.v
+} {} {}} D:/GitHub/jichuangsai/src/cpu/stage_id.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/stage_id.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module reg_if_id
+-- Compiling module stage_id
 
 Top level modules:
-	reg_if_id
+	stage_id
 
 } {} {}} D:/GitHub/jichuangsai/src/cpu/stage_ex.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/stage_ex.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
@@ -40,12 +47,12 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	stage_ex
 
-} {} {}} D:/GitHub/jichuangsai/src/cpu/stage_id.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/stage_id.v
+} {} {}} D:/GitHub/jichuangsai/src/cpu/reg_if_id.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/reg_if_id.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module stage_id
+-- Compiling module reg_if_id
 
 Top level modules:
-	stage_id
+	reg_if_id
 
 } {} {}} D:/GitHub/jichuangsai/src/cpu/stage_mem_new.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/stage_mem_new.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
@@ -61,9 +68,6 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	reg_mem_wb
 
-} {} {}} D:/GitHub/jichuangsai/src/cpu/defines.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/defines.v
-Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
-
 } {} {}} D:/GitHub/jichuangsai/src/cpu/regfile.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/regfile.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 -- Compiling module regfile
@@ -71,12 +75,8 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 Top level modules:
 	regfile
 
-} {} {}} D:/GitHub/jichuangsai/src/cpu/reg_ex_mem.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/reg_ex_mem.v
+} {} {}} D:/GitHub/jichuangsai/src/cpu/defines.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/defines.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
--- Compiling module reg_ex_mem
-
-Top level modules:
-	reg_ex_mem
 
 } {} {}} D:/GitHub/jichuangsai/src/cpu/reg_pc.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/reg_pc.v
 Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
@@ -84,5 +84,12 @@ Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
 
 Top level modules:
 	reg_pc
+
+} {} {}} D:/GitHub/jichuangsai/src/cpu/reg_ex_mem.v {1 {vlog -work work -vopt -stats=none D:/GitHub/jichuangsai/src/cpu/reg_ex_mem.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module reg_ex_mem
+
+Top level modules:
+	reg_ex_mem
 
 } {} {}}

@@ -35,7 +35,7 @@ module cpu_core_tb();
     
     // 【魔法时刻】：把刚写的 txt 文件读入这个数组！
     initial begin
-        $readmemh("inst.txt", rom_array);
+        $readmemh("D:\\GitHub\\jichuangsai\\test\\inst.txt", rom_array);
     end
     
     // 把 ROM 的数据喂给 CPU

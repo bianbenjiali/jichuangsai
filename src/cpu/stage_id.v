@@ -225,52 +225,83 @@ module stage_id (
 					endcase // funct3
 				end
 				`OP_OP : begin
-					case (funct3)
-						`FUNCT3_ADD_SUB : begin
-							case (funct7)
-								`FUNCT7_ADD : begin
-									`SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-								end
-								`FUNCT7_SUB : begin
-									`SET_INST(`EXE_RES_ARITH, `EXE_SUB_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-								end
-								default : begin
-								end
-							endcase // funct7
-						end
-						`FUNCT3_SLL : begin
-							`SET_INST(`EXE_RES_SHIFT, `EXE_SLL_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-						end
-						`FUNCT3_SLT : begin
-							`SET_INST(`EXE_RES_ARITH, `EXE_SLT_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-						end
-						`FUNCT3_SLTU : begin
-							`SET_INST(`EXE_RES_ARITH, `EXE_SLTU_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-						end
-						`FUNCT3_XOR : begin
-							`SET_INST(`EXE_RES_LOGIC, `EXE_XOR_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-						end
-						`FUNCT3_SRL_SRA : begin
-							case (funct7)
-								`FUNCT7_SRL : begin
-									`SET_INST(`EXE_RES_SHIFT, `EXE_SRL_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-								end
-								`FUNCT7_SRA : begin
-									`SET_INST(`EXE_RES_SHIFT, `EXE_SRA_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-								end
-								default : begin
-								end
-							endcase // funct7
-						end
-						`FUNCT3_OR : begin
-							`SET_INST(`EXE_RES_LOGIC, `EXE_OR_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-						end
-						`FUNCT3_AND : begin
-							`SET_INST(`EXE_RES_LOGIC, `EXE_AND_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
-						end
-						default : begin
-						end
-					endcase // funct3
+					if (funct7 == `FUNCT7_M) begin
+						case (funct3)
+							`FUNCT3_MUL : begin
+								`SET_INST(`EXE_RES_MUL, `EXE_MUL_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_MULH : begin
+								`SET_INST(`EXE_RES_MUL, `EXE_MULH_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_MULHSU : begin
+								`SET_INST(`EXE_RES_MUL, `EXE_MULHSU_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_MULHU : begin
+								`SET_INST(`EXE_RES_MUL, `EXE_MULHU_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_DIV : begin
+								`SET_INST(`EXE_RES_MUL, `EXE_DIV_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_DIVU : begin
+								`SET_INST(`EXE_RES_MUL, `EXE_DIVU_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_REM : begin
+								`SET_INST(`EXE_RES_MUL, `EXE_REM_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_REMU : begin
+								`SET_INST(`EXE_RES_MUL, `EXE_REMU_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							default: begin
+							end
+						endcase
+					end else begin
+						case (funct3)
+							`FUNCT3_ADD_SUB : begin
+								case (funct7)
+									`FUNCT7_ADD : begin
+										`SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+									end
+									`FUNCT7_SUB : begin
+										`SET_INST(`EXE_RES_ARITH, `EXE_SUB_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+									end
+									default : begin
+									end
+								endcase // funct7
+							end
+							`FUNCT3_SLL : begin
+								`SET_INST(`EXE_RES_SHIFT, `EXE_SLL_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_SLT : begin
+								`SET_INST(`EXE_RES_ARITH, `EXE_SLT_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_SLTU : begin
+								`SET_INST(`EXE_RES_ARITH, `EXE_SLTU_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_XOR : begin
+								`SET_INST(`EXE_RES_LOGIC, `EXE_XOR_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_SRL_SRA : begin
+								case (funct7)
+									`FUNCT7_SRL : begin
+										`SET_INST(`EXE_RES_SHIFT, `EXE_SRL_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+									end
+									`FUNCT7_SRA : begin
+										`SET_INST(`EXE_RES_SHIFT, `EXE_SRA_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+									end
+									default : begin
+									end
+								endcase // funct7
+							end
+							`FUNCT3_OR : begin
+								`SET_INST(`EXE_RES_LOGIC, `EXE_OR_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							`FUNCT3_AND : begin
+								`SET_INST(`EXE_RES_LOGIC, `EXE_AND_OP, 1, 1, rs, 1, rt, 1, rd, 0, 0, 0)
+							end
+							default : begin
+							end
+						endcase
+					end // funct3
 				end
 				`OP_MISC_MEM : begin
 				end
