@@ -362,7 +362,7 @@ module stage_id (
             if (id_pred_taken != actual_taken) begin
                 br = 1; 
                 // 如果实际要跳，那就按实际的跳；如果实际没跳，那就回到 PC+4 的正轨上
-                br_addr = actual_taken ? actual_addr : (id_pc + 4);
+                br_addr = actual_taken ? actual_addr : (pc + 4);
                 
             // 情况 2：方向猜对了，但跳去的地址猜错了
             end else if (actual_taken && (id_pred_addr != actual_addr)) begin

@@ -8,7 +8,7 @@ module reg_pc (
 	input  wire [`InstAddrBus] br_addr    ,
 	input  wire                pred_taken_i,
 	input  wire [`InstAddrBus] pred_addr_i ,
-	output reg  [`InstAddrBus] pc_o       ,
+	output reg  [`InstAddrBus] pc_o       
 );
 
 	reg [`InstAddrBus] pc       ;

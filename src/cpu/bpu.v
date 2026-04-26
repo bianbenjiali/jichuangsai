@@ -9,10 +9,10 @@ module bpu(
     output wire                pred_taken_o, // 预测的分支是否被采取 (1: 预测跳转，0: 预测不跳转)
     output wire [`InstAddrBus] pred_addr_o,  // 预测的跳转目标地址
 
-    input  wire                upd_en_o,    // ID 阶段发现是一条分支指令
+    input  wire                upd_en_i,    // ID 阶段发现是一条分支指令
     input  wire [`InstAddrBus] upd_pc_i,    // ID 阶段的分支指令的 PC
     input  wire                upd_taken_i, // ID 阶段的分支指令实际是否被采取
-    input  wire [`InstAddrBus] upd_addr_i,  // ID 阶段的分支指令的实际跳转目标地址
+    input  wire [`InstAddrBus] upd_addr_i  // ID 阶段的分支指令的实际跳转目标地址
 );
 
     // 提取 PC 的[6:2] 位作为“页码” (共 5 位，对应 32 行)
