@@ -5,7 +5,6 @@ module stage_if (
 	input  wire [`MemAddrBus] pc_i      ,      // 来自 PC 寄存器的地址
 	input  wire [    `RegBus] mem_data_i,      // 从外部 ROM 读回来的指令机器码
 	input  wire               br        ,      // 分支跳转标志
-	input  wire               right_one ,      // 原作者用来辅助跳转的信号
 	output wire               mem_re    ,      // 读使能
 	output wire [`MemAddrBus] mem_addr_o,      // 输出给外部 ROM 的地址
 	output wire [`MemAddrBus] pc_o      ,      // 传递给下一级的 PC

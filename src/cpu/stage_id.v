@@ -28,7 +28,15 @@ module stage_id (
 	output reg                 br           ,
 	output reg  [`InstAddrBus] br_addr      ,
 	output reg  [`InstAddrBus] link_addr    ,
-	output reg  [     `RegBus] mem_offset
+	output reg  [     `RegBus] mem_offset   ,
+	// 来自分支预测单元的信息
+	input  wire                id_pred_taken,
+    input  wire [`InstAddrBus] id_pred_addr,
+    
+    // 新增：输出给 BPU 的真实结果（用于更新）
+    output wire                bpu_upd_en_o,
+    output wire                bpu_upd_taken_o,
+    output wire [`InstAddrBus] bpu_upd_addr_o
 );
 
 	wire[6:0] opcode = inst[6:0];
@@ -78,6 +86,10 @@ module stage_id (
 	assign reg1_reg2_ge = ($signed(opv1) >= $signed(opv2));
 	assign reg1_reg2_geu = (opv1 >= opv2);
 
+	reg is_branch_inst; // 这条指令到底是不是分支/跳转指令？
+    reg actual_taken;   // 实际上到底跳没跳？
+    reg [31:0] actual_addr; // 实际上跳去哪了？
+
 	`define SET_INST(i_alusel, i_aluop, i_inst_valid, i_re1, i_reg_addr1, i_re2, i_reg_addr2, i_we, i_reg_waddr, i_imm1, i_imm2, i_mem_offset) \
 		aluop = i_aluop; \
 		alusel = i_alusel; \
@@ -92,15 +104,19 @@ module stage_id (
 		imm2 = i_imm2; \
 		mem_offset = i_mem_offset;
 
-	`define SET_BRANCH(i_br, i_br_addr, i_link_addr) \
-		br = i_br; \
-		br_addr = i_br_addr; \
-		link_addr = i_link_addr;
+`define SET_BRANCH(i_br, i_br_addr, i_link_addr) \
+		actual_taken = i_br; \
+		actual_addr = i_br_addr; \
+		link_addr = i_link_addr; \
+        is_branch_inst = 1; // 只要调了这个宏，说明它就是个跳转指令！
 
 	always @ (*) begin
 		if (rst) begin
 			`SET_INST(`EXE_RES_NOP, `EXE_NOP_OP, 1, 0, rs, 0, rt, 0, rd, 0, 0, 0)
 			`SET_BRANCH(0, 0, 0)
+			is_branch_inst = 1'b0;
+			actual_taken = 1'b0;
+			actual_addr = 0;
 		end else begin
 			`SET_INST(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 			`SET_BRANCH(0, 0, 0)
@@ -336,5 +352,31 @@ module stage_id (
 	always @ (*) begin
 		`SET_OPV(opv2, re2, reg_addr2, reg_data2, imm2, stallreq_for_reg2_load)
 	end
+
+    always @(*) begin
+        br = 0;
+        br_addr = 0;
+        
+        if (is_branch_inst) begin
+            // 情况 1：猜跳没跳的方向猜错了
+            if (id_pred_taken != actual_taken) begin
+                br = 1; 
+                // 如果实际要跳，那就按实际的跳；如果实际没跳，那就回到 PC+4 的正轨上
+                br_addr = actual_taken ? actual_addr : (id_pc + 4);
+                
+            // 情况 2：方向猜对了，但跳去的地址猜错了
+            end else if (actual_taken && (id_pred_addr != actual_addr)) begin
+                br = 1;
+                br_addr = actual_addr;
+            end
+        end
+    end
+
+    // ----------------------------------------------------
+    // 发送成绩单，让 BPU 长经验
+    // ----------------------------------------------------
+    assign bpu_upd_en_o    = is_branch_inst; // 只要是分支指令，就去更新
+    assign bpu_upd_taken_o = actual_taken;   // 告诉它到底跳没跳
+    assign bpu_upd_addr_o  = actual_addr;    // 告诉它真实的地址
 
 endmodule // stage_id

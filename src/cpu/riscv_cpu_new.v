@@ -5,17 +5,17 @@ module cpu_core (
 	input  wire clk,
 	input  wire rst,
 	
-	// --- 向队友B暴露的 指令存储器(ROM)接口 ---
+	// --- 指令存储器(ROM)接口 ---
 	output wire [31:0] inst_addr_o,   // CPU想取哪条指令
 	input  wire [31:0] inst_data_i,   // ROM返回的指令机器码
 	output wire        inst_re_o,     // 读使能
 	
-	// --- 向队友B暴露的 数据存储器(RAM)/外设总线接口 ---
-	output wire[31:0] data_addr_o,   // CPU想读写哪个内存/外设地址
+	// --- 数据存储器(RAM)/外设总线接口 ---
+	output wire [31:0] data_addr_o,   // CPU想读写哪个内存/外设地址
 	output wire [31:0] data_wdata_o,  // CPU想写的数据
 	input  wire [31:0] data_rdata_i,  // RAM/外设返回的数据
 	output wire        data_we_o,     // 写使能 (为1时写，为0时只读)
-	output wire[ 3:0] data_be_o      // 字节掩码 (Byte Enable)
+	output wire [ 3:0] data_be_o      // 字节掩码 (Byte Enable)
 );
 
 	// -------- 以下是 CPU 内部连接线 --------
@@ -24,7 +24,6 @@ module cpu_core (
 
 	// PC
 	wire[`InstAddrBus] pc;
-	wire right_one;
 	wire br;
 	wire[`InstAddrBus] br_addr;
 
@@ -70,6 +69,18 @@ module cpu_core (
 	wire wb_we;
 	wire[`RegAddrBus] wb_reg_waddr;
 	wire[`RegBus] wb_reg_wdata;
+
+	//BPU连线
+    wire pred_taken;
+    wire [`InstAddrBus] pred_addr;
+    wire id_pred_taken;
+    wire [`InstAddrBus] id_pred_addr;
+    
+    // BPU 更新连线 (从 stage_id 出来的信号)
+    wire bpu_upd_en;
+    wire bpu_upd_taken;
+    wire [`InstAddrBus] bpu_upd_addr;
+
     
     // 一些没用上的线，接地即可
     wire mem_re_temp; 
@@ -83,13 +94,27 @@ module cpu_core (
 
 	reg_pc reg_pc0 (
 		.clk(clk), .rst(rst), .stall(stall), .br(br), .br_addr(br_addr),
-		.pc_o(pc), .right_one_o(right_one)
+		.pc_o(pc), .pred_taken_i(pred_taken), .pred_addr_i(pred_addr)
 	);
+
+	bpu bpu0(
+        .clk         (clk),
+        .rst         (rst),
+        // 预测端口 (连给 IF 阶段和 PC)
+        .pc_i        (pc),
+        .pred_taken_o(pred_taken),
+        .pred_addr_o (pred_addr),
+        // 更新端口 (接来自 ID 阶段的真实判决结果)
+        .upd_en_i    (bpu_upd_en),
+        .upd_pc_i    (id_pc),
+        .upd_taken_i (bpu_upd_taken),
+        .upd_addr_i  (bpu_upd_addr)
+    );
 
 	stage_if stage_if0 (
 		.rst(rst), .pc_i(pc), 
         .mem_data_i(inst_data_i),  // 直接接外部ROM数据
-		.br(br), .right_one(right_one),
+		.br(br), 
 		.mem_re(inst_re_o),        // 直接接外部ROM使能
         .mem_addr_o(inst_addr_o),  // 直接接外部ROM地址
 		.pc_o(if_pc), .inst_o(if_inst), .stallreq(stallreq_if)
@@ -97,8 +122,8 @@ module cpu_core (
 
 	reg_if_id reg_if_id0 (
 		.clk(clk), .rst(rst), .if_pc(if_pc), .if_inst(if_inst),
-		.stall(stall), .br(br),
-		.id_pc(id_pc), .id_inst(id_inst)
+		.stall(stall), .br(br), .if_pred_taken(pred_taken), .if_pred_addr(pred_addr),
+		.id_pc(id_pc), .id_inst(id_inst), .id_pred_taken(id_pred_taken), .id_pred_addr(id_pred_addr)
 	);
 
 	stage_id stage_id0 (
@@ -108,7 +133,9 @@ module cpu_core (
 		.re1(id_re1), .re2(id_re2), .reg_addr1(id_reg_addr1), .reg_addr2(id_reg_addr2),
 		.aluop(id_aluop), .alusel(id_alusel), .opv1(id_opv1), .opv2(id_opv2),
 		.we(id_we), .reg_waddr(id_reg_waddr), .stallreq(stallreq_id),
-		.br(br), .br_addr(br_addr), .link_addr(id_link_addr), .mem_offset(id_mem_offset)
+		.br(br), .br_addr(br_addr), .link_addr(id_link_addr), .mem_offset(id_mem_offset),
+		.id_pred_taken(id_pred_taken), .id_pred_addr(id_pred_addr),
+		.bpu_upd_en_o(bpu_upd_en), .bpu_upd_taken_o(bpu_upd_taken), .bpu_upd_addr_o(bpu_upd_addr)
 	);
 
 	regfile regfile0 (
