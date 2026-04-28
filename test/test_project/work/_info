@@ -20,16 +20,16 @@ n@_opt
 Z4 OL;O;2020.4;71
 R0
 T_opt1
-!s110 1777214930
-V75mEEjXhPa?11VcjmnWjk3
+!s110 1777342320
+VO]RNbfZ9^][Xi15h_5zDZ0
 R1
-=1-08bfb8d2316b-69ee25d2-1c5-5c20
+=1-08bfb8d2316b-69f0176f-363-106c
 R2
 R3
 n@_opt1
 R4
 vbpu
-Z5 !s110 1777214917
+Z5 !s110 1777342307
 !i10b 1
 !s100 aDeGX@3gCD@QC7?[>2?Bk0
 Z6 !s11b Dg1SIo80bB@j0V0VzS_@n1
@@ -38,21 +38,21 @@ Z7 dD:/GitHub/jichuangsai/test/test_project
 w1777214753
 8D:/GitHub/jichuangsai/src/cpu/bpu.v
 FD:/GitHub/jichuangsai/src/cpu/bpu.v
-!i122 255
+!i122 297
 L0 4 53
 Z8 VDg1SIo80bB@j0V0VzS_@n1
 Z9 OL;L;2020.4;71
 r1
 !s85 0
 31
-Z10 !s108 1777214917.000000
+Z10 !s108 1777342307.000000
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/bpu.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/bpu.v|
 !i113 0
 Z11 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
 R3
 vcpu_core
-Z12 !s110 1777214916
+R5
 !i10b 1
 !s100 AE1PWeC?HeQa@XB_fBfKJ1
 R6
@@ -61,14 +61,14 @@ R7
 w1777213992
 8D:/GitHub/jichuangsai/src/cpu/riscv_cpu_new.v
 FD:/GitHub/jichuangsai/src/cpu/riscv_cpu_new.v
-!i122 249
+!i122 291
 L0 4 193
 R8
 R9
 r1
 !s85 0
 31
-Z13 !s108 1777214916.000000
+R10
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/riscv_cpu_new.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/riscv_cpu_new.v|
 !i113 0
@@ -81,10 +81,10 @@ R5
 R6
 IP7j:CdGHG;2<3L6L7egGZ2
 R7
-w1777214904
+w1777289590
 8D:/GitHub/jichuangsai/test/cpu_core_tb.v
 FD:/GitHub/jichuangsai/test/cpu_core_tb.v
-!i122 254
+!i122 296
 L0 3 67
 R8
 R9
@@ -98,23 +98,23 @@ R10
 R11
 R3
 vctrl
-R12
+Z12 !s110 1777342306
 !i10b 1
 !s100 0_nC6Oe[1GYY5JGMKboYY0
 R6
 InbR3D@_?ZQ=hJXz87l4W41
 R7
-Z14 w1515726991
+Z13 w1515726991
 8D:/GitHub/jichuangsai/src/cpu/ctrl.v
 FD:/GitHub/jichuangsai/src/cpu/ctrl.v
-!i122 242
+!i122 284
 L0 3 33
 R8
 R9
 r1
 !s85 0
 31
-R13
+Z14 !s108 1777342306.000000
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/ctrl.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/ctrl.v|
 !i113 0
@@ -127,17 +127,17 @@ R12
 R6
 IZYV@f_>0>obaGBI0la7E30
 R7
-R14
+R13
 8D:/GitHub/jichuangsai/src/cpu/reg_ex_mem.v
 FD:/GitHub/jichuangsai/src/cpu/reg_ex_mem.v
-!i122 243
+!i122 285
 L0 3 37
 R8
 R9
 r1
 !s85 0
 31
-R13
+R14
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/reg_ex_mem.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/reg_ex_mem.v|
 !i113 0
@@ -150,17 +150,17 @@ R12
 R6
 Ilz9bjWPWQ;klkF^I3G=`Q0
 R7
-R14
+R13
 8D:/GitHub/jichuangsai/src/cpu/reg_id_ex.v
 FD:/GitHub/jichuangsai/src/cpu/reg_id_ex.v
-!i122 244
+!i122 286
 L0 3 45
 R8
 R9
 r1
 !s85 0
 31
-R13
+R14
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/reg_id_ex.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/reg_id_ex.v|
 !i113 0
@@ -176,14 +176,14 @@ R7
 w1777207544
 8D:/GitHub/jichuangsai/src/cpu/reg_if_id.v
 FD:/GitHub/jichuangsai/src/cpu/reg_if_id.v
-!i122 245
+!i122 287
 L0 3 30
 R8
 R9
 r1
 !s85 0
 31
-R13
+R14
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/reg_if_id.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/reg_if_id.v|
 !i113 0
@@ -196,70 +196,70 @@ R12
 R6
 Ien`>SekJ4SJfg3;UbQiKG3
 R7
-R14
+R13
 8D:/GitHub/jichuangsai/src/cpu/reg_mem_wb.v
 FD:/GitHub/jichuangsai/src/cpu/reg_mem_wb.v
-!i122 246
+!i122 288
 L0 3 25
 R8
 R9
 r1
 !s85 0
 31
-R13
+R14
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/reg_mem_wb.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/reg_mem_wb.v|
 !i113 0
 R11
 R3
 vreg_pc
-R12
+R5
 !i10b 1
-!s100 ZIIgQ?@NOYQjX@=L4KSYl2
+!s100 916f1A?3M0DJjJh@N7I6c2
 R6
-IbzJX_ZA6;OnCAf7`6ldL91
+Ib^Vo7GTUQZaGEd0Pi3Wn_1
 R7
-w1777214505
+w1777342143
 8D:/GitHub/jichuangsai/src/cpu/reg_pc.v
 FD:/GitHub/jichuangsai/src/cpu/reg_pc.v
-!i122 247
-L0 3 42
+!i122 289
+L0 3 56
 R8
 R9
 r1
 !s85 0
 31
-R13
+R14
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/reg_pc.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/reg_pc.v|
 !i113 0
 R11
 R3
 vregfile
-R12
+R5
 !i10b 1
 !s100 XjQ3^ZbYZd`ZII19KOd[d0
 R6
 IM:zbN6M4ljFhJ@WZYn<:b1
 R7
-R14
+R13
 8D:/GitHub/jichuangsai/src/cpu/regfile.v
 FD:/GitHub/jichuangsai/src/cpu/regfile.v
-!i122 248
+!i122 290
 L0 3 50
 R8
 R9
 r1
 !s85 0
 31
-R13
+R10
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/regfile.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/regfile.v|
 !i113 0
 R11
 R3
 vstage_ex
-R12
+R5
 !i10b 1
 !s100 Y0:lRjWl:]RNQ;eg3E`EB2
 R6
@@ -268,14 +268,14 @@ R7
 w1776936966
 8D:/GitHub/jichuangsai/src/cpu/stage_ex.v
 FD:/GitHub/jichuangsai/src/cpu/stage_ex.v
-!i122 250
+!i122 292
 L0 3 178
 R8
 R9
 r1
 !s85 0
 31
-R13
+R10
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/stage_ex.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/stage_ex.v|
 !i113 0
@@ -284,21 +284,21 @@ R3
 vstage_id
 R5
 !i10b 1
-!s100 dUmTW8@c2Mz60]`FOI:jR1
+!s100 ?;QD3YG7VKfGEPcL2h4jP1
 R6
-IGk[9XUJgJ5B]o5c=GZj_92
+II>Y:k?iYaD4IKNl[k@_5G3
 R7
-w1777214573
+w1777279545
 8D:/GitHub/jichuangsai/src/cpu/stage_id.v
 FD:/GitHub/jichuangsai/src/cpu/stage_id.v
-!i122 251
-L0 3 380
+!i122 293
+L0 3 391
 R8
 R9
 r1
 !s85 0
 31
-R13
+R10
 !s107 D:\GitHub\jichuangsai\src\cpu\defines.v|D:/GitHub/jichuangsai/src/cpu/stage_id.v|
 !s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GitHub/jichuangsai/src/cpu/stage_id.v|
 !i113 0
@@ -314,7 +314,7 @@ R7
 w1777194977
 8D:/GitHub/jichuangsai/src/cpu/stage_if_new.v
 FD:/GitHub/jichuangsai/src/cpu/stage_if_new.v
-!i122 252
+!i122 294
 L0 3 29
 R8
 R9
@@ -337,7 +337,7 @@ R7
 w1776861890
 8D:/GitHub/jichuangsai/src/cpu/stage_mem_new.v
 FD:/GitHub/jichuangsai/src/cpu/stage_mem_new.v
-!i122 253
+!i122 295
 L0 3 127
 R8
 R9

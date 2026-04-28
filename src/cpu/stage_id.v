@@ -104,22 +104,25 @@ module stage_id (
 		imm2 = i_imm2; \
 		mem_offset = i_mem_offset;
 
-`define SET_BRANCH(i_br, i_br_addr, i_link_addr) \
+/*`define SET_BRANCH(i_br, i_br_addr, i_link_addr) \
 		actual_taken = i_br; \
 		actual_addr = i_br_addr; \
 		link_addr = i_link_addr; \
-        is_branch_inst = 1; // 只要调了这个宏，说明它就是个跳转指令！
+        is_branch_inst = 1; // 只要调了这个宏，说明它就是个跳转指令！*/
 
 	always @ (*) begin
 		if (rst) begin
 			`SET_INST(`EXE_RES_NOP, `EXE_NOP_OP, 1, 0, rs, 0, rt, 0, rd, 0, 0, 0)
-			`SET_BRANCH(0, 0, 0)
 			is_branch_inst = 1'b0;
 			actual_taken = 1'b0;
 			actual_addr = 0;
+			link_addr = 0;
 		end else begin
 			`SET_INST(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-			`SET_BRANCH(0, 0, 0)
+			is_branch_inst = 1'b0;
+			actual_taken = 1'b0;
+			actual_addr = 0;
+			link_addr = 0;
 			case (opcode)
 				`OP_LUI : begin
 					`SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 0, 0, 0, 0, 1, rd, ({U_imm, 12'b0}), 0, 0)
@@ -129,37 +132,45 @@ module stage_id (
 				end
 				`OP_JAL : begin
 					`SET_INST(`EXE_RES_JUMP_BRANCH, `EXE_JAL_OP, 1, 0, 0, 0, 0, 1, rd, 0, 0, 0)
-					`SET_BRANCH(1, pc_plus_J_imm, pc_plus_4)
+					is_branch_inst = 1'b1;
+					actual_taken = 1'b1;
+					actual_addr = pc_plus_J_imm;
+					link_addr = pc_plus_4;
 				end
 				`OP_JALR : begin
 					`SET_INST(`EXE_RES_JUMP_BRANCH, `EXE_JALR_OP, 1, 1, rs, 0, 0, 1, rd, 0, 0, 0)
-					`SET_BRANCH(1, reg1_plus_I_imm, pc_plus_4)
+					is_branch_inst = 1'b1;
+					actual_taken = 1'b1;
+					actual_addr = reg1_plus_I_imm;
+					link_addr = pc_plus_4;
 				end
 				`OP_BRANCH : begin
+					is_branch_inst = 1'b1;
+					actual_addr = pc_plus_B_imm; // 先算出分支目标地址，后面再根据条件决定要不要跳
 					case (funct3)
 						`FUNCT3_BEQ : begin
 							`SET_INST(`EXE_RES_JUMP_BRANCH, `EXE_BEQ_OP, 1, 1, rs, 1, rt, 0, 0, 0, 0, 0)
-							if (reg1_reg2_eq) `SET_BRANCH(1, pc_plus_B_imm, 0)
+							actual_taken = reg1_reg2_eq;
 						end
 						`FUNCT3_BNE : begin
 							`SET_INST(`EXE_RES_JUMP_BRANCH, `EXE_BNE_OP, 1, 1, rs, 1, rt, 0, 0, 0, 0, 0)
-							if (reg1_reg2_ne) `SET_BRANCH(1, pc_plus_B_imm, 0)
+							actual_taken = reg1_reg2_ne;
 						end
 						`FUNCT3_BLT : begin
 							`SET_INST(`EXE_RES_JUMP_BRANCH, `EXE_BLT_OP, 1, 1, rs, 1, rt, 0, 0, 0, 0, 0)
-							if (reg1_reg2_lt) `SET_BRANCH(1, pc_plus_B_imm, 0)
+							actual_taken = reg1_reg2_lt;
 						end
 						`FUNCT3_BGE : begin
 							`SET_INST(`EXE_RES_JUMP_BRANCH, `EXE_BGE_OP, 1, 1, rs, 1, rt, 0, 0, 0, 0, 0)
-							if (reg1_reg2_ge) `SET_BRANCH(1, pc_plus_B_imm, 0)
+							actual_taken = reg1_reg2_ge;
 						end
 						`FUNCT3_BLTU : begin
 							`SET_INST(`EXE_RES_JUMP_BRANCH, `EXE_BLTU_OP, 1, 1, rs, 1, rt, 0, 0, 0, 0, 0)
-							if (reg1_reg2_ltu) `SET_BRANCH(1, pc_plus_B_imm, 0)
+							actual_taken = reg1_reg2_ltu;
 						end
 						`FUNCT3_BGEU : begin
 							`SET_INST(`EXE_RES_JUMP_BRANCH, `EXE_BGEU_OP, 1, 1, rs, 1, rt, 0, 0, 0, 0, 0)
-							if (reg1_reg2_geu) `SET_BRANCH(1, pc_plus_B_imm, 0)
+							actual_taken = reg1_reg2_geu;
 						end
 						default : begin
 						end

@@ -10,7 +10,7 @@ module cpu_core_tb();
     wire [31:0] inst_data_i;
     wire        inst_re_o;
     
-    wire[31:0] data_addr_o;
+    wire [31:0] data_addr_o;
     wire [31:0] data_wdata_o;
     wire [31:0] data_rdata_i;
     wire        data_we_o;
