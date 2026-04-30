@@ -35,7 +35,7 @@ module cpu_core_tb();
     
     // 【魔法时刻】：把刚写的 txt 文件读入这个数组！
     initial begin
-        $readmemh("D:\\GitHub\\jichuangsai\\test\\bpu_test.txt", rom_array);
+        $readmemh("D:\\GitHub\\jichuangsai\\test\\inst.txt", rom_array);
     end
     
     // 把 ROM 的数据喂给 CPU
@@ -60,7 +60,7 @@ module cpu_core_tb();
         rst = 1;         // 一开始复位有效 (假设高电平复位)
         #50 rst = 0;     // 50ns 后松开复位，CPU 开始狂奔！
         
-        #500 $stop;      // 跑 500ns 就自动停止仿真
+        #2000 $stop;      // 跑 2000ns 就自动停止仿真
     end
 
     // 产生 100MHz 的时钟 (每 5ns 翻转一次)
