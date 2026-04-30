@@ -10,7 +10,7 @@ module cpu_core_tb();
     wire [31:0] inst_data_i;
     wire        inst_re_o;
     
-    wire[31:0] data_addr_o;
+    wire [31:0] data_addr_o;
     wire [31:0] data_wdata_o;
     wire [31:0] data_rdata_i;
     wire        data_we_o;
@@ -35,7 +35,7 @@ module cpu_core_tb();
     
     // 【魔法时刻】：把刚写的 txt 文件读入这个数组！
     initial begin
-        $readmemh("D:\\GitHub\\jichuangsai\\test\\inst.txt", rom_array);
+        $readmemh("D:\\GitHub\\jichuangsai\\test\\bpu_test.txt", rom_array);
     end
     
     // 把 ROM 的数据喂给 CPU

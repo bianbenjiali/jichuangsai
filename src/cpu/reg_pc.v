@@ -6,31 +6,45 @@ module reg_pc (
 	input  wire [         5:0] stall      ,
 	input  wire                br         ,
 	input  wire [`InstAddrBus] br_addr    ,
-	output reg  [`InstAddrBus] pc_o       ,
-	output reg                 right_one_o
+	input  wire                pred_taken_i,
+	input  wire [`InstAddrBus] pred_addr_i ,
+	output reg  [`InstAddrBus] pc_o       
 );
 
-	reg [`InstAddrBus] pc       ;
-	reg                right_one;
+	//reg [`InstAddrBus] pc       ;
 
 	always @ (posedge clk) begin
+		if (rst) begin
+			pc_o <= 32'h00000000; // 复位时从地址 0 开始执行
+		end else if (!stall[0]) begin
+			if (br) begin
+				pc_o <= br_addr; // 分支跳转
+			end else if (pred_taken_i) begin
+				pc_o <= pred_addr_i; // 预测跳转
+			end else begin
+				pc_o <= pc_o + 4; // 顺序执行
+			end
+		end
+	end
+	
+	/*always @ (posedge clk) begin
 		if (!rst && br) begin
 			pc <= br_addr;
-			right_one <= 1;
 		end else if (!rst && !stall[0]) begin
-			pc <= pc + 4;
-			right_one <= 0;
+			if (pred_taken_i) begin
+				pc <= pred_addr_i;
+			end else begin
+				pc <= pc + 4;
+			end
 		end
 		if (rst) begin
 			pc_o      <= 0;
-			right_one <= 0;
 			pc        <= 4;
 		end else if (!stall[0]) begin
 			//$display("PC now: %h", pc);
 			pc_o <= pc;
-			right_one_o <= right_one;
 		end
-	end
+	end*/
 
 	/*always @ (posedge clk) begin
 		if (rst) begin
