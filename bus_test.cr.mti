@@ -1,0 +1,64 @@
+F:/cpu_riscv/jichuangsai/src/cpu/uart_rx.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/uart_rx.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module uart_rx
+
+Top level modules:
+	uart_rx
+
+} {} {}} F:/cpu_riscv/jichuangsai/src/cpu/uart_tx.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/uart_tx.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module uart_tx
+
+Top level modules:
+	uart_tx
+
+} {} {}} F:/cpu_riscv/jichuangsai/src/cpu/top.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/top.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module top
+
+Top level modules:
+	top
+
+} {} {}} F:/cpu_riscv/jichuangsai/src/cpu/tb_bus.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/tb_bus.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module tb_bus
+
+Top level modules:
+	tb_bus
+
+} {} {}} F:/cpu_riscv/jichuangsai/src/cpu/dmem.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/dmem.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module dmem
+
+Top level modules:
+	dmem
+
+} {} {}} F:/cpu_riscv/jichuangsai/src/cpu/cpu_bus_controller.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/cpu_bus_controller.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module bus
+
+Top level modules:
+	bus
+
+} {} {}} F:/cpu_riscv/jichuangsai/src/cpu/uart_adapter.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/uart_adapter.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module uart_adapter
+
+Top level modules:
+	uart_adapter
+
+} {} {}} F:/cpu_riscv/jichuangsai/src/cpu/uart.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/uart.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module uart
+
+Top level modules:
+	uart
+
+} {} {}} F:/cpu_riscv/jichuangsai/src/cpu/imem.v {1 {vlog -work work -vopt -stats=none F:/cpu_riscv/jichuangsai/src/cpu/imem.v
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+-- Compiling module imem
+
+Top level modules:
+	imem
+
+} {} {}}

@@ -158,7 +158,7 @@ module bus (
         .m_axis_tdata   (m_axis_tdata),
         .m_axis_tvalid  (m_axis_tvalid),
         .m_axis_tready  (m_axis_tready),
-        .rxd            (uart_rx_sync), // 已同步的 RXD
+        .rxd            (uart_rx_i), // 已同步的 RXD
         .txd            (uart_tx),
         .tx_busy        (tx_busy),
         .rx_busy        (rx_busy),

@@ -34,7 +34,7 @@ module top (
     //========================================================================
     cpu_core u_cpu_core (
         .clk         (clk),
-        .rst         (rst_n),
+        .rst         (~rst_n),
         .inst_addr_o (inst_addr),
         .inst_data_i (inst_data),
         .inst_re_o   (inst_re),

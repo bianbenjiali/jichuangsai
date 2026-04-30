@@ -1,6 +1,7 @@
 m255
 K4
 z2
+!s11f vlog 2020.4 2020.10, Oct 13 2020
 13
 !s112 1.1
 !i10d 8192
@@ -8,3 +9,210 @@ z2
 !i10f 100
 cModel Technology
 dF:/modelsim1/examples
+vbus
+Z0 !s110 1777429769
+!i10b 1
+!s100 <4N<GY]1<aRbkaKl`A=ie3
+Z1 !s11b Dg1SIo80bB@j0V0VzS_@n1
+I0G@b?]m;E^0lm_Ozjo^YF1
+Z2 dF:/cpu_riscv/jichuangsai
+w1777185582
+8F:/cpu_riscv/jichuangsai/src/cpu/cpu_bus_controller.v
+FF:/cpu_riscv/jichuangsai/src/cpu/cpu_bus_controller.v
+!i122 72
+L0 9 178
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 OL;L;2020.4;71
+r1
+!s85 0
+31
+Z5 !s108 1777429769.000000
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/cpu_bus_controller.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/cpu_bus_controller.v|
+!i113 0
+Z6 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z7 tCvgOpt 0
+vdmem
+Z8 !s110 1777429768
+!i10b 1
+!s100 n_f5MmN2ES1XMMi_Y]idz0
+R1
+I`ODCeVi_?2]m0gXU^L=C;2
+R2
+w1777193531
+8F:/cpu_riscv/jichuangsai/src/cpu/dmem.v
+FF:/cpu_riscv/jichuangsai/src/cpu/dmem.v
+!i122 64
+L0 56 172
+R3
+R4
+r1
+!s85 0
+31
+Z9 !s108 1777429768.000000
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/dmem.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/dmem.v|
+!i113 0
+R6
+R7
+vimem
+R8
+!i10b 1
+!s100 36m[88JEIDLPGQIZ[8UVb1
+R1
+ID311nzGzcz_5?nLjoCWLi0
+R2
+w1777193438
+8F:/cpu_riscv/jichuangsai/src/cpu/imem.v
+FF:/cpu_riscv/jichuangsai/src/cpu/imem.v
+!i122 65
+L0 56 156
+R3
+R4
+r1
+!s85 0
+31
+R9
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/imem.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/imem.v|
+!i113 0
+R6
+R7
+vtb_bus
+R0
+!i10b 1
+!s100 X8<=EWS]eg8G7?5OQG@<:0
+R1
+IS0hL6z?LAGl8M>I>8OXQL1
+R2
+w1777191013
+8F:/cpu_riscv/jichuangsai/src/cpu/tb_bus.v
+FF:/cpu_riscv/jichuangsai/src/cpu/tb_bus.v
+!i122 66
+L0 3 192
+R3
+R4
+r1
+!s85 0
+31
+R9
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/tb_bus.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/tb_bus.v|
+!i113 0
+R6
+R7
+vtop
+R0
+!i10b 1
+!s100 [M?<YSRUlbR`:61^fJFbJ0
+R1
+IKz3hZ1Dl68LKZ[omA4h_U1
+R2
+w1777185907
+8F:/cpu_riscv/jichuangsai/src/cpu/top.v
+FF:/cpu_riscv/jichuangsai/src/cpu/top.v
+!i122 67
+L0 1 66
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/top.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/top.v|
+!i113 0
+R6
+R7
+vuart
+R0
+!i10b 1
+!s100 9X[fWEAgOHASXgL8iMM]Q2
+R1
+If@0Eh4NOGf;kMi;d`=<`Z3
+R2
+Z10 w1740700577
+8F:/cpu_riscv/jichuangsai/src/cpu/uart.v
+FF:/cpu_riscv/jichuangsai/src/cpu/uart.v
+!i122 68
+L0 32 82
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/uart.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/uart.v|
+!i113 0
+R6
+R7
+vuart_adapter
+R0
+!i10b 1
+!s100 9^37S`PzKO=4UP=;eZ>6h3
+R1
+I=cLZ^EGczdbmCOBMH<ECf2
+R2
+w1777185323
+8F:/cpu_riscv/jichuangsai/src/cpu/uart_adapter.v
+FF:/cpu_riscv/jichuangsai/src/cpu/uart_adapter.v
+!i122 69
+L0 2 141
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/uart_adapter.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/uart_adapter.v|
+!i113 0
+R6
+R7
+vuart_rx
+R0
+!i10b 1
+!s100 3djdgUz40ElH?d=_`Jig_1
+R1
+I`OSDUcmnk22HdTRE8BLbM3
+R2
+R10
+8F:/cpu_riscv/jichuangsai/src/cpu/uart_rx.v
+FF:/cpu_riscv/jichuangsai/src/cpu/uart_rx.v
+!i122 70
+L0 32 111
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/uart_rx.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/uart_rx.v|
+!i113 0
+R6
+R7
+vuart_tx
+R0
+!i10b 1
+!s100 nR>SOJDOVE5=NQ3aUmSE=1
+R1
+IA>DI<2be0SWBfj2Kz31BK1
+R2
+R10
+8F:/cpu_riscv/jichuangsai/src/cpu/uart_tx.v
+FF:/cpu_riscv/jichuangsai/src/cpu/uart_tx.v
+!i122 71
+L0 32 84
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 F:/cpu_riscv/jichuangsai/src/cpu/uart_tx.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|F:/cpu_riscv/jichuangsai/src/cpu/uart_tx.v|
+!i113 0
+R6
+R7
