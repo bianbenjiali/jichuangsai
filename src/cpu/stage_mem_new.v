@@ -87,7 +87,7 @@ module stage_mem (
 				
 				// ================= 写内存 (Store) =================
 				`EXE_SB_OP : begin
-					mem_addr_o = mem_addr_i;
+					mem_addr_o = {mem_addr_i[31:2], 2'b00}; // 强制 4 字节对齐
 					mem_we     = 1'b1;
 					mem_data_o = {4{rt_data[7:0]}}; // 把最低字节复制4份，靠sel掩码决定写哪个
 					reg_wdata_o = 0;
@@ -100,7 +100,7 @@ module stage_mem (
 					endcase
 				end
 				`EXE_SH_OP : begin
-					mem_addr_o = mem_addr_i;
+					mem_addr_o = {mem_addr_i[31:2], 2'b00}; // 强制 4 字节对齐
 					mem_we     = 1'b1;
 					mem_data_o = {2{rt_data[15:0]}};
 					reg_wdata_o = 0;
@@ -111,7 +111,7 @@ module stage_mem (
 					endcase
 				end
 				`EXE_SW_OP : begin
-					mem_addr_o = mem_addr_i;
+					mem_addr_o = {mem_addr_i[31:2], 2'b00}; // 强制 4 字节对齐
 					mem_we     = 1'b1;
 					mem_data_o = rt_data;
 					reg_wdata_o = 0;
