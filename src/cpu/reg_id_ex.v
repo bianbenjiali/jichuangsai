@@ -12,6 +12,7 @@ module reg_id_ex (
 	input  wire [         5:0] stall        ,
 	input  wire [`InstAddrBus] id_link_addr ,
 	input  wire [     `RegBus] id_mem_offset,
+	input  wire                br           ,
 	output reg  [   `AluOpBus] ex_aluop     ,
 	output reg  [  `AluSelBus] ex_alusel    ,
 	output reg  [     `RegBus] ex_opv1      ,
