@@ -149,7 +149,7 @@ module cpu_core (
 		.clk(clk), .rst(rst),
 		.id_aluop(id_aluop), .id_alusel(id_alusel), .id_opv1(id_opv1), .id_opv2(id_opv2),
 		.id_reg_waddr(id_reg_waddr), .id_we(id_we), .id_link_addr(id_link_addr), .id_mem_offset(id_mem_offset),
-		.stall(stall),.br(br),
+		.stall(stall),
 		.ex_aluop(ex_aluop), .ex_alusel(ex_alusel), .ex_opv1(ex_opv1), .ex_opv2(ex_opv2),
 		.ex_reg_waddr(ex_reg_waddr_i), .ex_we(ex_we_i), .ex_link_addr(ex_link_addr_i), .ex_mem_offset(ex_mem_offset)
 	);
