@@ -92,11 +92,11 @@ module stage_mem (
 					mem_data_o = {4{rt_data[7:0]}}; // 把最低字节复制4份，靠sel掩码决定写哪个
 					reg_wdata_o = 0;
 					case (mem_addr_i[1:0])
-						2'b00   : mem_sel = 4'b0001;
-						2'b01   : mem_sel = 4'b0010;
-						2'b10   : mem_sel = 4'b0100;
-						2'b11   : mem_sel = 4'b1000;
-						default : mem_sel = 4'b0000;
+						2'b00   : begin mem_sel = 4'b0001; mem_we = 1'b1; end
+						2'b01   : begin mem_sel = 4'b0010; mem_we = 1'b1; end
+						2'b10   : begin mem_sel = 4'b0100; mem_we = 1'b1; end
+						2'b11   : begin mem_sel = 4'b1000; mem_we = 1'b1; end
+						default : begin mem_sel = 4'b0000; mem_we = 1'b0; end
 					endcase
 				end
 				`EXE_SH_OP : begin
@@ -105,9 +105,9 @@ module stage_mem (
 					mem_data_o = {2{rt_data[15:0]}};
 					reg_wdata_o = 0;
 					case (mem_addr_i[1:0])
-						2'b00   : mem_sel = 4'b0011;
-						2'b10   : mem_sel = 4'b1100;
-						default : mem_sel = 4'b0000;
+						2'b00   : begin mem_sel = 4'b0011; mem_we = 1'b1; end
+						2'b10   : begin mem_sel = 4'b1100; mem_we = 1'b1; end
+						default : begin mem_sel = 4'b0000; mem_we = 1'b0; end
 					endcase
 				end
 				`EXE_SW_OP : begin
@@ -116,8 +116,8 @@ module stage_mem (
 					mem_data_o = rt_data;
 					reg_wdata_o = 0;
 					case (mem_addr_i[1:0])
-						2'b00   : mem_sel = 4'b1111; 
-						default : mem_sel = 4'b0000;
+						2'b00   : begin mem_sel = 4'b1111; mem_we = 1'b1; end 
+						default : begin mem_sel = 4'b0000; mem_we = 1'b0; end
 					endcase
 				end
 				default : begin
