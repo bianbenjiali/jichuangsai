@@ -12,6 +12,7 @@ module reg_id_ex (
 	input  wire [         5:0] stall        ,
 	input  wire [`InstAddrBus] id_link_addr ,
 	input  wire [     `RegBus] id_mem_offset,
+	input  wire                br           ,
 	output reg  [   `AluOpBus] ex_aluop     ,
 	output reg  [  `AluSelBus] ex_alusel    ,
 	output reg  [     `RegBus] ex_opv1      ,
@@ -23,7 +24,7 @@ module reg_id_ex (
 );
 
 	always @ (posedge clk) begin
-		if (rst || (stall[2] && !stall[3])) begin
+		if (rst || br || (stall[2] && !stall[3])) begin
 			ex_aluop      <= `EXE_NOP_OP;
 			ex_alusel     <= `EXE_RES_NOP;
 			ex_opv1       <= 0;
