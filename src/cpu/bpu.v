@@ -40,7 +40,7 @@ module bpu(
             for (i = 0; i < 32; i = i + 1) begin
                 valid[i]     <= 1'b0;
                 bht_state[i] <= 2'b01; 
-                is
+                is_branch[i] <= 1'b0;
             end
         end else if (upd_en_i) begin
             valid[upd_idx]      <= 1'b1;
