@@ -68,7 +68,7 @@ module stage_id (
     wire[`InstAddrBus] pc_plus_J_imm;
     wire[`InstAddrBus] pc_plus_B_imm;
     wire[`InstAddrBus] pc_plus_4;
-    assign reg1_plus_I_imm = reg_data1 + {{20{I_imm[11]}}, I_imm};
+    assign reg1_plus_I_imm = opv1 + {{20{I_imm[11]}}, I_imm};
     assign pc_plus_J_imm = pc + {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0};
    	assign pc_plus_B_imm = pc + {{20{inst[31]}}, inst[7], inst[30:25], inst[11:8], 1'b0};
     assign pc_plus_4 = pc + 4;
