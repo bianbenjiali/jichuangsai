@@ -18,12 +18,11 @@ module regfile (
 
 	// write
 	always @ (posedge clk) begin
-		if (!rst) begin
-			// x0 cannot be written
-			if (we && waddr != 0) begin
+		if (rst) begin
+			regs <= 0;
+		end else if (we && waddr != 0) begin
 				//$display("WRITE REGISTER FILE: x%d = %h", waddr, wdata);
 				regs[waddr] <= wdata;
-			end
 		end
 	end
 
