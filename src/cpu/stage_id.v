@@ -55,7 +55,13 @@ module stage_id (
 
 	reg stallreq_for_reg1_load;
 	reg stallreq_for_reg2_load;
-	assign stallreq = stallreq_for_reg1_load || stallreq_for_reg2_load;
+
+    wire ex_is_store = (ex_aluop == `EXE_SB_OP) || (ex_aluop == `EXE_SH_OP) || (ex_aluop == `EXE_SW_OP);
+    wire id_is_load  = (opcode == `OP_LOAD);
+
+    wire stallreq_for_store_load = ex_is_store && id_is_load;
+
+	assign stallreq = stallreq_for_reg1_load || stallreq_for_reg2_load || stallreq_for_store_load;
 
 	wire prev_is_load;
 	assign prev_is_load = (ex_aluop == `EXE_LB_OP)  || 
