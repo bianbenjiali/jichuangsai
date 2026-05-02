@@ -12,6 +12,7 @@
 `define OP_OP_IMM   7'b0010011
 `define OP_OP       7'b0110011
 `define OP_MISC_MEM 7'b0001111
+`define OP_SYSTEM   7'b1110011
 
 //================== Instruction funct3 in RISC-V ================== 
 // JALR
@@ -63,6 +64,13 @@
 `define FUNCT3_DIVU   3'b101 // 无符号除法
 `define FUNCT3_REM    3'b110 // 有符号求余
 `define FUNCT3_REMU   3'b111 // 无符号求余
+//
+`define FUNCT3_CSRRW  3'b001
+`define FUNCT3_CSRRS  3'b010
+`define FUNCT3_CSRRC  3'b011
+`define FUNCT3_CSRRWI 3'b101
+`define FUNCT3_CSRRSI 3'b110
+`define FUNCT3_CSRRCI 3'b111
 
 //================== Instruction funct7 in RISC-V ================== 
 `define FUNCT7_SLLI 7'b0000000
@@ -85,14 +93,15 @@
 `define FUNCT7_M   7'b0000001
 
 //================== AluSel ================== 
-`define EXE_RES_LOGIC       3'b001
-`define EXE_RES_SHIFT       3'b010
-`define EXE_RES_MOVE        3'b011
-`define EXE_RES_NOP         3'b000
-`define EXE_RES_ARITH       3'b100
-`define EXE_RES_MUL         3'b101
-`define EXE_RES_JUMP_BRANCH 3'b110
-`define EXE_RES_LOAD_STORE  3'b111
+`define EXE_RES_LOGIC       4'b0001
+`define EXE_RES_SHIFT       4'b0010
+`define EXE_RES_MOVE        4'b0011
+`define EXE_RES_NOP         4'b0000
+`define EXE_RES_ARITH       4'b0100
+`define EXE_RES_MUL         4'b0101
+`define EXE_RES_JUMP_BRANCH 4'b0110
+`define EXE_RES_LOAD_STORE  4'b0111
+`define EXE_RES_CSR         4'b1000
 
 //================== AluOp ==================
 
@@ -138,6 +147,12 @@
 `define EXE_REM_OP 34
 `define EXE_REMU_OP 35
 
+`define EXE_CSRRW_OP   41
+`define EXE_CSRRS_OP   42
+`define EXE_CSRRC_OP   43
+`define EXE_ECALL_OP   44
+`define EXE_MRET_OP    45
+
 
 //==================  Hardware Properties ================== 
 
@@ -155,7 +170,7 @@
 
 // ALU
 `define AluOpBus 7:0
-`define AluSelBus 2:0
+`define AluSelBus 3:0
 
 // Memory
 `define MemAddrBus 31:0

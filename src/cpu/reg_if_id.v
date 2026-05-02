@@ -16,7 +16,7 @@ module reg_if_id (
 );
 
 	always @ (posedge clk) begin
-		if (rst || br || (stall[1] && !stall[2])) begin
+		if (rst || (br && !stall[2]) || (stall[1] && !stall[2])) begin
 			id_pc   <= 0;
 			id_inst <= 0;
 			id_pred_taken <= 0;

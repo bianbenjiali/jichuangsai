@@ -16,10 +16,10 @@ module reg_pc (
 	always @ (posedge clk) begin
 		if (rst) begin
 			pc_o <= 32'h00000000; // 复位时从地址 0 开始执行
+		end else if (br && !stall[2]) begin		
+			pc_o <= br_addr; // 分支跳转
 		end else if (!stall[0]) begin
-			if (br) begin
-				pc_o <= br_addr; // 分支跳转
-			end else if (pred_taken_i) begin
+			if(pred_taken_i) begin
 				pc_o <= pred_addr_i; // 预测跳转
 			end else begin
 				pc_o <= pc_o + 4; // 顺序执行

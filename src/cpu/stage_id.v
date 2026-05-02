@@ -342,6 +342,8 @@ module stage_id (
 		stallreq = 0; \
 		if(rst) begin \
 			opv = 0; \
+		end else if (re && (reg_addr == 0)) begin \
+			opv = 0; \
 		end else if (re && prev_is_load && (ex_reg_waddr == reg_addr)) begin \
 			stallreq = 1; \
 		end else if (re && ex_we && (ex_reg_waddr == reg_addr)) begin \
