@@ -19,7 +19,9 @@ module regfile (
 	// write
 	always @ (posedge clk) begin
 		if (rst) begin
-			regs <= 0;
+			for (i = 0; i < `RegNum; i = i + 1) begin
+				regs[i] <= 0;
+			end
 		end else if (we && waddr != 0) begin
 				//$display("WRITE REGISTER FILE: x%d = %h", waddr, wdata);
 				regs[waddr] <= wdata;
