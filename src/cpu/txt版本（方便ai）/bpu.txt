@@ -24,11 +24,12 @@ module bpu(
     reg [`InstAddrBus]  btb_target[0:31]; // 记录上次跳去了哪里
     reg [1:0]           bht_state [0:31]; // 2-bit 饱和计数器
     reg                 valid     [0:31]; // 有效位
+    reg                 is_branch [0:31]; 
 
     integer i;
 
     // 预测逻辑
-    wire hit = valid[pred_idx] && (btb_tag[pred_idx] == pc_i[31:7]); 
+    wire hit = valid[pred_idx] && (btb_tag[pred_idx] == pc_i[31:7]) && is_branch[pred_idx]; 
     
     assign pred_taken_o = hit && (bht_state[pred_idx][1] == 1'b1);
     assign pred_addr_o  = btb_target[pred_idx];
@@ -39,12 +40,13 @@ module bpu(
             for (i = 0; i < 32; i = i + 1) begin
                 valid[i]     <= 1'b0;
                 bht_state[i] <= 2'b01; 
+                is_branch[i] <= 1'b0;
             end
         end else if (upd_en_i) begin
             valid[upd_idx]      <= 1'b1;
             btb_tag[upd_idx]    <= upd_pc_i[31:7];
             btb_target[upd_idx] <= upd_addr_i;
-
+            is_branch[upd_idx]  <= 1'b1;
             // 2-bit 状态机更新
             if (upd_taken_i) begin
                 if (bht_state[upd_idx] != 2'b11) bht_state[upd_idx] <= bht_state[upd_idx] + 2'b01;

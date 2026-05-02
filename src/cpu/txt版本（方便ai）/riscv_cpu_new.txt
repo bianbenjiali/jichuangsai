@@ -155,7 +155,7 @@ module cpu_core (
 	);
 
 	stage_ex stage_ex0 (
-		.rst(rst), .aluop(ex_aluop), .alusel(ex_alusel), .opv1(ex_opv1), .opv2(ex_opv2),
+		.clk(clk), .rst(rst), .aluop(ex_aluop), .alusel(ex_alusel), .opv1(ex_opv1), .opv2(ex_opv2),
 		.reg_waddr_i(ex_reg_waddr_i), .we_i(ex_we_i), .link_addr(ex_link_addr_i), .mem_offset(ex_mem_offset),
 		.reg_waddr_o(ex_reg_waddr_o), .we_o(ex_we_o), .reg_wdata(ex_reg_wdata), .stallreq(stallreq_ex),
 		.mem_addr(ex_mem_addr), .ex_aluop(ex_aluop_o), .rt_data(ex_rt_data)
