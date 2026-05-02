@@ -19,7 +19,7 @@ module regfile (
 	// write
 	always @ (posedge clk) begin
 		if (rst) begin
-			for (i = 0; i < `RegNum; i = i + 1) begin
+			for (integer i = 0; i < `RegNum; i = i + 1) begin
 				regs[i] <= 0;
 			end
 		end else if (we && waddr != 0) begin
