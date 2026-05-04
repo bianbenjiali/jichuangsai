@@ -32,8 +32,7 @@ module bus (
     //========================================================================
     wire [3:0] d_region = data_addr_i[31:28];
     wire d_is_dmem   = (d_region == 4'h1);                    // 0x1000_0000 ~ 0x1FFF_FFFF
-    wire d_is_mmio   = (d_region[3:2] == 2'b10);              // 0x2000_0000 ~ 0x3FFF_FFFF
-
+    wire d_is_mmio   = (d_region == 4'h2) || (d_region == 4'h3);   // MMIO 细分在后面，0x2000_0000 ~ 0x2FFF_FFFF 和 0x3000_0000 ~ 0x3FFF_FFFF 都是 MMIO
     // MMIO 细分
     wire d_is_uart  = d_is_mmio && (data_addr_i[31:12] == 20'h20000);   // 0x2000_0000
     wire d_is_gpio  = d_is_mmio && (data_addr_i[31:12] == 20'h20001);   // 0x2000_1000
@@ -99,7 +98,7 @@ module bus (
     // 指令 ROM (imem)
     imem u_imem (
         .clka  (clk),
-        .addra (imem_addr),
+        .addra (imem_addr[13:2]), // 4 字节对齐
         .douta (imem_rdata)
     );
 
@@ -107,10 +106,10 @@ module bus (
     dmem u_dmem (
         .clka  (clk),
         .wea   (dmem_be),        // 4 位字节写使能
-        .addra (dmem_addr),
+        .addra (dmem_addr[13:2]), // 4 字节对齐
         .dina  (dmem_wdata),
         .clkb  (clk),
-        .addrb (dmem_addr),
+        .addrb (dmem_addr[13:2]), // 4 字节对齐
         .doutb (dmem_rdata)
     );
 
