@@ -5,8 +5,14 @@
 //               - 数据通道 -> DMEM (RAM) / MMIO (UART, GPIO)
 //               - 内部实例化存储器 IP 和外设
 //////////////////////////////////////////////////////////////////////
-
-module bus (
+// IMEM/DMEM 字地址宽度须与 blk_mem_gen 深度一致：
+// 4096 字 => 12 位 => 字节线 inst_addr[13:2]
+// 8192 字 => 13 位 => 字节线 inst_addr[14:2]
+// 深度加大后若仍用 [13:2] 接 13 位 addra，高位悬空，仿真 dout 常为全 X。
+module bus #(
+    parameter integer IMEM_WORD_ADDR_W = 13,
+    parameter integer DMEM_WORD_ADDR_W = 13
+) (
     input  wire        clk,
     input  wire        rst_n,
 
@@ -62,6 +68,9 @@ module bus (
     assign imem_addr = inst_addr_i;
     assign inst_data_o = (inst_re_i && i_valid) ? imem_rdata : 32'h0;
 
+    wire [IMEM_WORD_ADDR_W-1:0] imem_addra = imem_addr[IMEM_WORD_ADDR_W+1:2];
+    wire [DMEM_WORD_ADDR_W-1:0] dmem_addra = dmem_addr[DMEM_WORD_ADDR_W+1:2];
+
     //========================================================================
     // 4. 数据通道设备选择
     //========================================================================
@@ -98,18 +107,18 @@ module bus (
     // 指令 ROM (imem)
     imem u_imem (
         .clka  (clk),
-        .addra (imem_addr[13:2]), // 4 字节对齐
+        .addra (imem_addra),
         .douta (imem_rdata)
     );
 
     // 数据 RAM (dmem) - 需配置字节写使能
     dmem u_dmem (
         .clka  (clk),
-        .wea   (dmem_be),        // 4 位字节写使能
-        .addra (dmem_addr[13:2]), // 4 字节对齐
+        .wea   (dmem_be),
+        .addra (dmem_addra),
         .dina  (dmem_wdata),
         .clkb  (clk),
-        .addrb (dmem_addr[13:2]), // 4 字节对齐
+        .addrb (dmem_addra),
         .doutb (dmem_rdata)
     );
 
