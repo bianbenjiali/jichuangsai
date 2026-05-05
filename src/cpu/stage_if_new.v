@@ -3,6 +3,7 @@
 module stage_if (
 	input  wire               rst       ,
 	input  wire [`MemAddrBus] pc_i      ,      // 来自 PC 寄存器的地址
+	input  wire [`MemAddrBus] next_pc_i ,
 	input  wire [    `RegBus] mem_data_i,      // 从外部 ROM 读回来的指令机器码
 	input  wire               br        ,      // 分支跳转标志
 	output wire               mem_re    ,      // 读使能
@@ -16,7 +17,7 @@ module stage_if (
 	assign mem_re = rst ? 1'b0 : 1'b1;
 	
 	// 直接把PC作为地址输出给外部的指令ROM
-	assign mem_addr_o = pc_i;
+	assign mem_addr_o = next_pc_i;
 	
 	// 流水线向后传递的PC
 	assign pc_o = pc_i;

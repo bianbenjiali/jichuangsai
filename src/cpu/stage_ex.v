@@ -17,7 +17,16 @@ module stage_ex (
 	output reg                 stallreq   ,
 	output reg  [ `MemAddrBus] mem_addr   ,
 	output wire [   `AluOpBus] ex_aluop   ,
-	output wire [     `RegBus] rt_data
+	output wire [     `RegBus] rt_data	  ,
+	output reg                 csr_we_o,
+    output reg  [11:0]  	   csr_waddr_o,
+    output reg  [31:0]         csr_wdata_o,
+    
+    output reg                 trap_en_o,
+    output reg  [31:0]         trap_epc_o,
+    output reg  [31:0]         trap_cause_o,
+	output reg  [31:0]         trap_tval_o,
+    output reg                 mret_en_o
 );
 
 	assign ex_aluop = aluop;
@@ -28,6 +37,7 @@ module stage_ex (
 	reg[`RegBus] arith_out;
 	reg[`RegBus] mem_out;
 	reg[`RegBus] mul_out;
+	reg[`RegBus] csr_out; // 准备写回 rd 寄存器的 CSR 旧值
 
 	// 1. 有符号 * 有符号
 	wire signed [63:0] mul_signed_signed = $signed(opv1) * $signed(opv2);
@@ -165,6 +175,31 @@ module stage_ex (
 		end // end else
 	end // always @ (*)
 
+    // EXE_RES_CSR
+    always @(*) begin
+        csr_we_o = 0; csr_waddr_o = 0; csr_wdata_o = 0;
+        trap_en_o = 0; trap_epc_o = 0; trap_cause_o = 0; trap_tval_o = 0; mret_en_o = 0;
+        csr_out = opv2; // opv2 里存的就是 ID 阶段顺过来的 CSR 旧数据
+
+        if (alusel == `EXE_RES_CSR) begin
+            csr_we_o    = (aluop != `EXE_CSR_READ_ONLY_OP);
+            csr_waddr_o = mem_offset[11:0]; // mem_offset 里存的是 CSR 地址
+            case (aluop)
+                `EXE_CSRRW_OP: csr_wdata_o = opv1;
+                `EXE_CSRRS_OP: csr_wdata_o = opv2 | opv1;
+                `EXE_CSRRC_OP: csr_wdata_o = opv2 & ~opv1;
+				default : csr_wdata_o = 0; // 其他情况不写 CSR
+            endcase
+        end else if (aluop == `EXE_ECALL_OP) begin
+            trap_en_o    = 1'b1;
+            trap_epc_o   = link_addr - 4; // 🚨 妙笔：link_addr 是 PC+4，减 4 刚好是当前 ecall 的 PC！
+            trap_cause_o = 32'd11;        // M 模式下的 ECALL 异常号是 11
+            trap_tval_o  = 0;             // ECALL 不产生错误值
+        end else if (aluop == `EXE_MRET_OP) begin
+            mret_en_o    = 1'b1;
+        end
+    end
+
 	always @ (*) begin
 		stallreq    = 0;
 		reg_waddr_o = reg_waddr_i;
@@ -213,6 +248,9 @@ module stage_ex (
 						reg_wdata = 0;
 					end
 				endcase
+			end
+			`EXE_RES_CSR : begin
+				reg_wdata = csr_out; // CSR 指令写回 rd 的是 CSR 旧值
 			end
 			default : begin
 				reg_wdata = 0;

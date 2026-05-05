@@ -8,12 +8,30 @@ module reg_pc (
 	input  wire [`InstAddrBus] br_addr    ,
 	input  wire                pred_taken_i,
 	input  wire [`InstAddrBus] pred_addr_i ,
-	output reg  [`InstAddrBus] pc_o       
+	output reg  [`InstAddrBus] pc_o       ,
+	output wire [`InstAddrBus] next_pc_o
 );
 
 	//reg [`InstAddrBus] pc       ;
 
-	always @ (posedge clk) begin
+	// 1. 组合逻辑：立刻计算出“下一拍”是什么地址
+    // 这个逻辑不经过寄存器，所以能抵消 RAM 的一周期延时
+	assign next_pc_o = (rst) ? 32'h00000000 :
+                       (br && !stall[2]) ? br_addr :
+                       (pred_taken_i && !stall[0]) ? pred_addr_i :
+                       (!stall[0]) ? (pc_o + 4) :
+                       pc_o; // 停顿执行时保持当前地址
+
+    // 2. 时序逻辑：只维护当前流水线的 pc_o
+    always @ (posedge clk) begin
+        if (rst) begin
+            pc_o <= 32'h00000000;
+        end else begin
+            pc_o <= next_pc_o;
+        end
+    end
+
+	/*always @ (posedge clk) begin
 		if (rst) begin
 			pc_o <= 32'h00000000; // 复位时从地址 0 开始执行
 		end else if (br && !stall[2]) begin		
@@ -25,10 +43,10 @@ module reg_pc (
 				pc_o <= pc_o + 4; // 顺序执行
 			end
 		end
-	end
+	end*/
 	
 	/*always @ (posedge clk) begin
-		if (!rst && br) begin
+		if (!rst && br) begin	
 			pc <= br_addr;
 		end else if (!rst && !stall[0]) begin
 			if (pred_taken_i) begin

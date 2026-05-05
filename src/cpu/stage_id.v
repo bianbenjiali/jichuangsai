@@ -29,6 +29,7 @@ module stage_id (
 	output reg  [`InstAddrBus] br_addr      ,
 	output reg  [`InstAddrBus] link_addr    ,
 	output reg  [     `RegBus] mem_offset   ,
+	input  wire [31:0]         ex_mem_offset_i, 
 	// 来自分支预测单元的信息
 	input  wire                id_pred_taken,
     input  wire [`InstAddrBus] id_pred_addr,
@@ -36,7 +37,13 @@ module stage_id (
     // 新增：输出给 BPU 的真实结果（用于更新）
     output wire                bpu_upd_en_o,
     output wire                bpu_upd_taken_o,
-    output wire [`InstAddrBus] bpu_upd_addr_o
+    output wire [`InstAddrBus] bpu_upd_addr_o,
+
+	// 新增：连接特权金库的专线
+    input  wire [31:0] csr_rdata_i,  // 读出的 CSR 数据
+    input  wire [31:0] csr_mtvec_i,  // 异常入口地址
+    input  wire [31:0] csr_mepc_i,   // 异常返回地址
+    output wire [11:0] csr_raddr_o  // 要读哪个 CSR？
 );
 
 	wire[6:0] opcode = inst[6:0];
@@ -61,7 +68,12 @@ module stage_id (
 
     wire stallreq_for_store_load = ex_is_store && id_is_load;
 
-	assign stallreq = stallreq_for_reg1_load || stallreq_for_reg2_load || stallreq_for_store_load;
+	wire ex_writes_csr = (ex_aluop == `EXE_CSRRW_OP) || (ex_aluop == `EXE_CSRRS_OP) || (ex_aluop == `EXE_CSRRC_OP);
+    wire id_reads_csr  = (opcode == `OP_SYSTEM) && (funct3 != 3'b000);
+	wire csr_addr_match = (inst[31:20] == ex_mem_offset_i[11:0]);
+	wire stallreq_csr_raw = ex_writes_csr && id_reads_csr && csr_addr_match; 	
+
+	assign stallreq = stallreq_for_reg1_load || stallreq_for_reg2_load || stallreq_for_store_load || stallreq_csr_raw;
 
 	wire prev_is_load;
 	assign prev_is_load = (ex_aluop == `EXE_LB_OP)  || 
@@ -95,6 +107,10 @@ module stage_id (
 	reg is_branch_inst; // 这条指令到底是不是分支/跳转指令？
     reg actual_taken;   // 实际上到底跳没跳？
     reg [31:0] actual_addr; // 实际上跳去哪了？
+
+	assign csr_raddr_o = (opcode == `OP_SYSTEM) ? inst[31:20] : 12'b0;
+    wire [31:0] zimm = {27'b0, rs}; // zimm 是零扩展的 5 位立即数
+ 	wire is_csr_write = (funct3[1:0] == 2'b01) ? 1'b1 : (rs != 0); 
 
 	`define SET_INST(i_alusel, i_aluop, i_inst_valid, i_re1, i_reg_addr1, i_re2, i_reg_addr2, i_we, i_reg_waddr, i_imm1, i_imm2, i_mem_offset) \
 		aluop = i_aluop; \
@@ -338,6 +354,63 @@ module stage_id (
 				end
 				`OP_MISC_MEM : begin
 				end
+				`OP_SYSTEM : begin
+        			case (funct3) 
+						3'b000: begin
+            			// 【黑科技】：把 ecall 和 mret 当作分支指令！复用你的 BPU 冲刷网络！
+            				is_branch_inst = 1'b1;
+            				actual_taken   = 1'b1;     // 必定跳转！
+            				link_addr      = pc_plus_4;// 给 EX 阶段推导当前 PC 用
+                        	if (inst[31:20] == 12'h000) begin // ecall
+                				`SET_INST(`EXE_RES_NOP, `EXE_ECALL_OP, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                				actual_addr = csr_mtvec_i; // 🚨 跳往 mtvec！
+            				end else if (inst[31:20] == 12'h302) begin // mret
+                				`SET_INST(`EXE_RES_NOP, `EXE_MRET_OP, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                				actual_addr = csr_mepc_i;  // 🚨 跳回 mepc！
+            				end
+        				end 
+						`FUNCT3_CSRRWI: begin
+							`SET_INST(`EXE_RES_CSR, `EXE_CSRRW_OP, 1, 0, 0, 0, 0, 1, rd, zimm, csr_rdata_i, {20'b0, inst[31:20]})
+						end
+						`FUNCT3_CSRRSI: begin
+							if (is_csr_write) begin
+								`SET_INST(`EXE_RES_CSR, `EXE_CSRRS_OP, 1, 0, 0, 0, 0, 1, rd, zimm, csr_rdata_i, {20'b0, inst[31:20]})
+							end else begin
+								`SET_INST(`EXE_RES_CSR, `EXE_CSR_READ_ONLY_OP, 1, 0, 0, 0, 0, 1, rd, zimm, csr_rdata_i, {20'b0, inst[31:20]})
+							end
+						end
+						`FUNCT3_CSRRCI: begin
+							if (is_csr_write) begin
+								`SET_INST(`EXE_RES_CSR, `EXE_CSRRC_OP, 1, 0, 0, 0, 0, 1, rd, zimm, csr_rdata_i, {20'b0, inst[31:20]})
+							end else begin
+								`SET_INST(`EXE_RES_CSR, `EXE_CSR_READ_ONLY_OP, 1, 0, 0, 0, 0, 1, rd, zimm, csr_rdata_i, {20'b0, inst[31:20]})
+							end
+						end
+						`FUNCT3_CSRRW: begin
+							`SET_INST(`EXE_RES_CSR, `EXE_CSRRW_OP, 1, 1, rs, 0, 0, 1, rd, 0, csr_rdata_i, {20'b0, inst[31:20]})
+						end
+						`FUNCT3_CSRRS: begin
+							if (is_csr_write) begin
+								`SET_INST(`EXE_RES_CSR, `EXE_CSRRS_OP, 1, 1, rs, 0, 0, 1, rd, 0, csr_rdata_i, {20'b0, inst[31:20]})
+							end else begin
+								`SET_INST(`EXE_RES_CSR, `EXE_CSR_READ_ONLY_OP, 1, 1, rs, 0, 0, 1, rd, 0, csr_rdata_i, {20'b0, inst[31:20]})
+							end
+						end
+						`FUNCT3_CSRRC: begin
+							if (is_csr_write) begin
+								`SET_INST(`EXE_RES_CSR, `EXE_CSRRC_OP, 1, 1, rs, 0, 0, 1, rd, 0, csr_rdata_i, {20'b0, inst[31:20]})
+							end else begin
+								`SET_INST(`EXE_RES_CSR, `EXE_CSR_READ_ONLY_OP, 1, 1, rs, 0, 0, 1, rd, 0, csr_rdata_i, {20'b0, inst[31:20]})
+							end
+						end
+						default: begin
+						end
+							// CSR 读写指令：借用现成的管道把数据送到 EX 阶段！
+            				// mem_offset 管道 -> 传 CSR 地址
+            				// opv2 管道 -> 传 CSR 读出来的旧数据
+           				 	// opv1 管道 -> 传 rs1 的值 或 zimm 立即数
+					endcase
+    			end
 				default      : begin
 				end
 			endcase // op

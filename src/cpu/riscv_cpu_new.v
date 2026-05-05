@@ -24,6 +24,7 @@ module cpu_core (
 
 	// PC
 	wire[`InstAddrBus] pc;
+	wire[`InstAddrBus] next_pc;
 	wire br;
 	wire[`InstAddrBus] br_addr;
 
@@ -81,6 +82,20 @@ module cpu_core (
     wire bpu_upd_taken;
     wire [`InstAddrBus] bpu_upd_addr;
 
+	// CSR 相关连线
+	wire[31:0] csr_rdata, csr_mtvec, csr_mepc;
+	wire[11:0] csr_raddr, csr_waddr;
+	wire [31:0] csr_wdata;
+	wire        csr_we;
+    
+	wire        trap_en, mret_en;
+	wire [31:0] trap_epc, trap_cause, trap_tval;
+    
+    // 指令退休标志 (用于 mcycle / minstret 计数)
+    wire        inst_ret_en;
+    // 【简化策略】：对于极简 CPU，只要没卡住，就可以近似认为执行了一条指令
+    assign      inst_ret_en = !stall[0];
+
     
     // 一些没用上的线，接地即可
     wire mem_re_temp; 
@@ -94,7 +109,7 @@ module cpu_core (
 
 	reg_pc reg_pc0 (
 		.clk(clk), .rst(rst), .stall(stall), .br(br), .br_addr(br_addr),
-		.pc_o(pc), .pred_taken_i(pred_taken), .pred_addr_i(pred_addr)
+		.pc_o(pc), .next_pc_o(next_pc), .pred_taken_i(pred_taken), .pred_addr_i(pred_addr)
 	);
 
 	bpu bpu0(
@@ -112,7 +127,7 @@ module cpu_core (
     );
 
 	stage_if stage_if0 (
-		.rst(rst), .pc_i(pc), 
+		.rst(rst), .pc_i(pc), .next_pc_i(next_pc),
         .mem_data_i(inst_data_i),  // 直接接外部ROM数据
 		.br(br), 
 		.mem_re(inst_re_o),        // 直接接外部ROM使能
@@ -133,9 +148,10 @@ module cpu_core (
 		.re1(id_re1), .re2(id_re2), .reg_addr1(id_reg_addr1), .reg_addr2(id_reg_addr2),
 		.aluop(id_aluop), .alusel(id_alusel), .opv1(id_opv1), .opv2(id_opv2),
 		.we(id_we), .reg_waddr(id_reg_waddr), .stallreq(stallreq_id),
-		.br(br), .br_addr(br_addr), .link_addr(id_link_addr), .mem_offset(id_mem_offset),
+		.br(br), .br_addr(br_addr), .link_addr(id_link_addr), .mem_offset(id_mem_offset), .ex_mem_offset_i(ex_mem_offset_i),
 		.id_pred_taken(id_pred_taken), .id_pred_addr(id_pred_addr),
-		.bpu_upd_en_o(bpu_upd_en), .bpu_upd_taken_o(bpu_upd_taken), .bpu_upd_addr_o(bpu_upd_addr)
+		.bpu_upd_en_o(bpu_upd_en), .bpu_upd_taken_o(bpu_upd_taken), .bpu_upd_addr_o(bpu_upd_addr),
+		.csr_rdata_i(csr_rdata),.csr_mtvec_i(csr_mtvec),.csr_mepc_i(csr_mepc),.csr_raddr_o(csr_raddr)
 	);
 
 	regfile regfile0 (
@@ -158,7 +174,8 @@ module cpu_core (
 		.clk(clk), .rst(rst), .aluop(ex_aluop), .alusel(ex_alusel), .opv1(ex_opv1), .opv2(ex_opv2),
 		.reg_waddr_i(ex_reg_waddr_i), .we_i(ex_we_i), .link_addr(ex_link_addr_i), .mem_offset(ex_mem_offset),
 		.reg_waddr_o(ex_reg_waddr_o), .we_o(ex_we_o), .reg_wdata(ex_reg_wdata), .stallreq(stallreq_ex),
-		.mem_addr(ex_mem_addr), .ex_aluop(ex_aluop_o), .rt_data(ex_rt_data)
+		.mem_addr(ex_mem_addr), .ex_aluop(ex_aluop_o), .rt_data(ex_rt_data),
+		.csr_we_o(csr_we),.csr_waddr_o(csr_waddr),.csr_wdata_o(csr_wdata),.trap_en_o(trap_en),.trap_epc_o(trap_epc),.trap_cause_o(trap_cause),.trap_tval_o(trap_tval),.mret_en_o(mret_en)
 	);
 
 	reg_ex_mem reg_ex_mem0 (
@@ -191,6 +208,24 @@ module cpu_core (
 		.mem_reg_waddr(mem_reg_waddr_o), .mem_we(mem_we_o), .mem_reg_wdata(mem_reg_wdata_o),
 		.stall(stall),
 		.wb_reg_waddr(wb_reg_waddr), .wb_we(wb_we), .wb_reg_wdata(wb_reg_wdata)
+	);
+
+	csr_reg u_csr_reg (
+		.clk         (clk),
+		.rst         (rst),
+		.we          (csr_we),
+		.waddr       (csr_waddr),
+		.wdata       (csr_wdata),
+		.raddr       (csr_raddr),
+		.rdata       (csr_rdata),
+		.trap_en     (trap_en),
+		.trap_epc    (trap_epc),
+		.trap_cause  (trap_cause),
+		.trap_tval   (trap_tval),
+		.trap_vec    (csr_mtvec), // 注意这里，输出异常入口给 ID
+		.mepc_o      (csr_mepc),  // 输出返回地址给 ID
+		.mret_en     (mret_en),
+		.inst_ret_en (inst_ret_en)
 	);
 
 endmodule

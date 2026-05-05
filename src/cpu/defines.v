@@ -152,7 +152,7 @@
 `define EXE_CSRRC_OP   43
 `define EXE_ECALL_OP   44
 `define EXE_MRET_OP    45
-
+`define EXE_CSR_READ_ONLY_OP 46
 
 //==================  Hardware Properties ================== 
 

@@ -17,6 +17,7 @@ module csr_reg (
     input  wire [31:0]  trap_cause,
     input  wire [31:0]  trap_tval,   // 新增：比如非法地址，存在这里
     output wire [31:0]  trap_vec,
+    output wire [31:0]  mepc_o,  
     input  wire         mret_en,   
     
     // 性能计数器硬件更新 (连到流水线的使能信号)
@@ -38,6 +39,7 @@ module csr_reg (
     reg [63:0] minstret; // 成功执行的指令计数器
 
     assign trap_vec = mtvec;
+    assign mepc_o   = mepc; 
 
     // --- 1. 读 CSR (纯组合逻辑) ---
     always @(*) begin
