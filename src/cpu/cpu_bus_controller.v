@@ -10,8 +10,8 @@
 // 8192 字 => 13 位 => 字节线 inst_addr[14:2]
 // 深度加大后若仍用 [13:2] 接 13 位 addra，高位悬空，仿真 dout 常为全 X。
 module bus #(
-    parameter integer IMEM_WORD_ADDR_W = 13,
-    parameter integer DMEM_WORD_ADDR_W = 13
+    parameter integer IMEM_WORD_ADDR_W = 14,
+    parameter integer DMEM_WORD_ADDR_W = 14
 ) (
     input  wire        clk,
     input  wire        rst_n,
@@ -131,6 +131,23 @@ module bus #(
     wire        m_axis_tvalid, m_axis_tready;
     wire        tx_busy, rx_busy, overrun_err, frame_err;
     wire [15:0] prescale;
+
+    reg uart_clk_en;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            uart_clk_en <= 1'b0;
+        end else begin
+            uart_clk_en <= ~uart_clk_en; // 每 1 个 sys_clk 周期翻转一次
+        end
+    end
+    
+    wire uart_clk;
+
+    BUFGCE u_uart_clock_gate (
+        .O   (uart_clk),   // 输出：受控的、干净的 UART 时钟 (50MHz)
+        .I   (clk),        // 输入：系统主时钟 (100MHz)
+        .CE  (uart_clk_en) // 使能：010101 翻转信号
+    );
 
     // UART 适配器（总线 -> AXI-Stream）
     uart_adapter u_uart_adapter (

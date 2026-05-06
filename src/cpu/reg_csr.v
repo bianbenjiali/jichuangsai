@@ -48,6 +48,8 @@ module csr_reg (
         end else begin
             case (raddr)
                 12'h300: rdata = mstatus;
+                // misa：MXL[31:30]=01 表示 RV32；(misa>>30)==1 满足 rv32mi-p-mcsr test_2；扩展 I+M
+                12'h301: rdata = 32'h40001100;
                 12'h304: rdata = mie;
                 12'h305: rdata = mtvec;
                 12'h340: rdata = mscratch;

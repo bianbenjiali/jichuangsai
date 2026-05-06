@@ -29,7 +29,6 @@ module stage_id (
 	output reg  [`InstAddrBus] br_addr      ,
 	output reg  [`InstAddrBus] link_addr    ,
 	output reg  [     `RegBus] mem_offset   ,
-	input  wire [31:0]         ex_mem_offset_i, 
 	// 来自分支预测单元的信息
 	input  wire                id_pred_taken,
     input  wire [`InstAddrBus] id_pred_addr,
@@ -68,12 +67,7 @@ module stage_id (
 
     wire stallreq_for_store_load = ex_is_store && id_is_load;
 
-	wire ex_writes_csr = (ex_aluop == `EXE_CSRRW_OP) || (ex_aluop == `EXE_CSRRS_OP) || (ex_aluop == `EXE_CSRRC_OP);
-    wire id_reads_csr  = (opcode == `OP_SYSTEM) && (funct3 != 3'b000);
-	wire csr_addr_match = (inst[31:20] == ex_mem_offset_i[11:0]);
-	wire stallreq_csr_raw = ex_writes_csr && id_reads_csr && csr_addr_match; 	
-
-	assign stallreq = stallreq_for_reg1_load || stallreq_for_reg2_load || stallreq_for_store_load || stallreq_csr_raw;
+	assign stallreq = stallreq_for_reg1_load || stallreq_for_reg2_load || stallreq_for_store_load;
 
 	wire prev_is_load;
 	assign prev_is_load = (ex_aluop == `EXE_LB_OP)  || 

@@ -24,7 +24,6 @@ module cpu_core (
 
 	// PC
 	wire[`InstAddrBus] pc;
-	wire[`InstAddrBus] next_pc;
 	wire br;
 	wire[`InstAddrBus] br_addr;
 
@@ -87,6 +86,13 @@ module cpu_core (
 	wire[11:0] csr_raddr, csr_waddr;
 	wire [31:0] csr_wdata;
 	wire        csr_we;
+	// EX 级 CSR 写与 ID 级 CSR 读同址：csr_reg 仍为旧值，用 EX _wdata 旁路到 ID（stall 会冻住 EX 导致死锁）
+	wire        id_is_csr_access;
+	wire        csr_ex_to_id_fwd;
+	wire [31:0] csr_rdata_to_id;
+	assign id_is_csr_access = (id_inst[6:0] == `OP_SYSTEM) && (id_inst[14:12] != 3'b000);
+	assign csr_ex_to_id_fwd = csr_we && id_is_csr_access && (id_inst[31:20] == csr_waddr);
+	assign csr_rdata_to_id  = csr_ex_to_id_fwd ? csr_wdata : csr_rdata;
     
 	wire        trap_en, mret_en;
 	wire [31:0] trap_epc, trap_cause, trap_tval;
@@ -109,7 +115,7 @@ module cpu_core (
 
 	reg_pc reg_pc0 (
 		.clk(clk), .rst(rst), .stall(stall), .br(br), .br_addr(br_addr),
-		.pc_o(pc), .next_pc_o(next_pc), .pred_taken_i(pred_taken), .pred_addr_i(pred_addr)
+		.pc_o(pc), .pred_taken_i(pred_taken), .pred_addr_i(pred_addr)
 	);
 
 	bpu bpu0(
@@ -127,7 +133,7 @@ module cpu_core (
     );
 
 	stage_if stage_if0 (
-		.rst(rst), .pc_i(pc), .next_pc_i(next_pc),
+		.clk(clk), .rst(rst), .pc_i(pc), .stall(stall),
         .mem_data_i(inst_data_i),  // 直接接外部ROM数据
 		.br(br), 
 		.mem_re(inst_re_o),        // 直接接外部ROM使能
@@ -148,10 +154,10 @@ module cpu_core (
 		.re1(id_re1), .re2(id_re2), .reg_addr1(id_reg_addr1), .reg_addr2(id_reg_addr2),
 		.aluop(id_aluop), .alusel(id_alusel), .opv1(id_opv1), .opv2(id_opv2),
 		.we(id_we), .reg_waddr(id_reg_waddr), .stallreq(stallreq_id),
-		.br(br), .br_addr(br_addr), .link_addr(id_link_addr), .mem_offset(id_mem_offset), .ex_mem_offset_i(ex_mem_offset_i),
+		.br(br), .br_addr(br_addr), .link_addr(id_link_addr), .mem_offset(id_mem_offset),
 		.id_pred_taken(id_pred_taken), .id_pred_addr(id_pred_addr),
 		.bpu_upd_en_o(bpu_upd_en), .bpu_upd_taken_o(bpu_upd_taken), .bpu_upd_addr_o(bpu_upd_addr),
-		.csr_rdata_i(csr_rdata),.csr_mtvec_i(csr_mtvec),.csr_mepc_i(csr_mepc),.csr_raddr_o(csr_raddr)
+		.csr_rdata_i(csr_rdata_to_id),.csr_mtvec_i(csr_mtvec),.csr_mepc_i(csr_mepc),.csr_raddr_o(csr_raddr)
 	);
 
 	regfile regfile0 (
@@ -187,7 +193,7 @@ module cpu_core (
 	);
 
 	stage_mem stage_mem0 (
-		.rst(rst),
+		.clk(clk), .rst(rst), .stall(stall),
 		.reg_waddr_i(mem_reg_waddr_i), .we_i(mem_we_i), .reg_wdata_i(mem_reg_wdata_i),
 		.mem_addr_i(mem_mem_addr), .aluop(mem_aluop), .rt_data(mem_rt_data),
         
